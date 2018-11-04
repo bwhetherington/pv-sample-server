@@ -1,0 +1,26 @@
+{
+  "name": "pv-sample-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "entry.js",
+  "scripts": {
+    "start": "node src/entry.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-syntax-import-meta": "^7.0.0"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0",
+    "esm": "^3.0.84",
+    "express": "^4.16.4",
+    "node-fetch": "^2.2.0",
+    "node-schedule": "^1.3.0"
+  }
+}
