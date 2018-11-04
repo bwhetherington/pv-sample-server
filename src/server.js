@@ -44,10 +44,12 @@ export default class Server {
   async updateSample() {
     const query = asyncIterator(queryGroups(groups));
     const numToSkip = randomInt(0, 100);
-    // Every artifact has a 1/1000 chance of being picked
+    // Every artifact has a 1/100 chance of being picked
     // May not actually produce 3 artifacts
+    // This is really really really stupid
+    // TODO replace this with something that is not awful for randomly selecting artifacts
     const sample = await query
-      .filter(_ => Math.random() < 0.001)
+      .filter(_ => Math.random() < 0.01)
       .map(artifact => artifact.content.wiki_friendly_title)
       .take(3);
     this.dailySample = sample;
