@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { queryGroups, groups } from './data';
 import { asyncIterator } from 'lazy-iters';
 import scheduler from 'node-schedule';
@@ -24,7 +25,7 @@ export default class Server {
     this.scheduleUpdates();
     const app = express();
     for (const key of Object.keys(this.router)) {
-      app.get(key, this.router[key]);
+      app.get(key, cors(), this.router[key]);
     }
     app.listen(this.port, () => {
       console.log(`Server listening on port ${this.port}`);
@@ -43,13 +44,12 @@ export default class Server {
   async updateSample() {
     const query = asyncIterator(queryGroups(groups));
 
-    // Every artifact has a 1/100 chance of being picked
-    // May not actually produce 3 artifacts
+    // Every artifact has a 1/10000 chance of being picked
     // This is really really really stupid
     // TODO replace this with something that is not awful for randomly selecting artifacts
     const sample = await query
-      .filter(_ => Math.random() < 0.01)
-      .map(artifact => artifact.content.wiki_friendly_title)
+      .loop()
+      .filter(_ => Math.random() < 0.0001)
       .take(3)
       .collect();
     this.dailySample = sample;
