@@ -1,7 +1,6 @@
 import Server from './server';
 import { queryGroups, groups } from './data';
-import asyncIterator from './iterator/async';
-import iterator from './iterator/sync';
+import { asyncIterator } from 'lazy-iters';
 
 function notFoundResponse(path) {
   return {

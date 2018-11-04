@@ -1,7 +1,6 @@
 import express from 'express';
 import { queryGroups, groups } from './data';
-import { asyncTake, asyncSkip, randomInt } from './util';
-import asyncIterator from './iterator/async';
+import { asyncIterator } from 'lazy-iters';
 import scheduler from 'node-schedule';
 
 const PORT = process.env.PORT | 8888;
@@ -43,7 +42,7 @@ export default class Server {
 
   async updateSample() {
     const query = asyncIterator(queryGroups(groups));
-    const numToSkip = randomInt(0, 100);
+
     // Every artifact has a 1/100 chance of being picked
     // May not actually produce 3 artifacts
     // This is really really really stupid
@@ -51,7 +50,8 @@ export default class Server {
     const sample = await query
       .filter(_ => Math.random() < 0.01)
       .map(artifact => artifact.content.wiki_friendly_title)
-      .take(3);
+      .take(3)
+      .collect();
     this.dailySample = sample;
   }
 }
