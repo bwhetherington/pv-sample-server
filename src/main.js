@@ -1,5 +1,7 @@
 import Server from './server';
 import { queryGroups, groups } from './data';
+import asyncIterator from './iterator/async';
+import iterator from './iterator/sync';
 
 function notFoundResponse(path) {
   return {
@@ -9,12 +11,8 @@ function notFoundResponse(path) {
 
 const routingInfo = {
   '/all': server => async (req, res) => {
-    const received = [];
-
-    const data = await queryGroups(groups);
-    for await (const artifact of data) {
-      received.push(artifact);
-    }
+    const data = asyncIterator(queryGroups(groups));
+    const received = await data.collect();
 
     res.json(received);
   },

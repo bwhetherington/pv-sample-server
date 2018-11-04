@@ -1,6 +1,7 @@
 import express from 'express';
 import { queryGroups, groups } from './data';
 import { asyncTake, asyncSkip, randomInt } from './util';
+import asyncIterator from './iterator/async';
 import scheduler from 'node-schedule';
 
 const PORT = process.env.PORT | 8888;
@@ -41,10 +42,14 @@ export default class Server {
   }
 
   async updateSample() {
-    const query = queryGroups(groups);
+    const query = asyncIterator(queryGroups(groups));
     const numToSkip = randomInt(0, 100);
-    const skipped = asyncSkip(query, numToSkip);
-    const sample = await asyncTake(skipped, 3);
+    // Every artifact has a 1/1000 chance of being picked
+    // May not actually produce 3 artifacts
+    const sample = await query
+      .filter(_ => Math.random() < 0.001)
+      .map(artifact => artifact.content.wiki_friendly_title)
+      .take(3);
     this.dailySample = sample;
   }
 }
