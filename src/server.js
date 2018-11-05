@@ -29,7 +29,7 @@ export default class Server {
       app.get(key, cors(), this.router[key]);
     }
     app.listen(this.port, () => {
-      logger.info(`server listening on port: ${this.port}`);
+      logger.debug(`server listening on port: ${this.port}`);
     });
   }
 
