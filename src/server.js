@@ -28,7 +28,7 @@ export default class Server {
     for (const key of Object.keys(this.router)) {
       app.get(key, cors(), this.router[key]);
     }
-    app.listen(this.port, () => {
+    app.listen(this.port, '0.0.0.0', () => {
       logger.debug(`server listening on port: ${this.port}`);
     });
   }
