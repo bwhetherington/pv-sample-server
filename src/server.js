@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import { queryGroups, groups } from './data';
-import { asyncIterator } from 'lazy-iters';
+import { queryGroups, groups, convertArtifact } from './data';
+import { iterator, asyncIterator } from 'lazy-iters';
 import scheduler from 'node-schedule';
 import logger from './config/logger';
 
@@ -37,7 +37,6 @@ export default class Server {
     const rule = new scheduler.RecurrenceRule();
     rule.minute = new scheduler.Range(0, 59, 1);
     scheduler.scheduleJob(rule, () => {
-      logger.debug('updating sample');
       this.updateSample();
     });
   }
@@ -45,14 +44,13 @@ export default class Server {
   async updateSample() {
     const query = asyncIterator(queryGroups(groups));
 
-    // Every artifact has a 1/10000 chance of being picked
-    // This is really really really stupid
-    // TODO replace this with something that is not awful for randomly selecting artifacts
     const sample = await query
       .loop()
       .filter(_ => Math.random() < 0.0001)
       .take(3)
       .collect();
+
     this.dailySample = sample;
+    logger.debug('sample updated');
   }
 }
