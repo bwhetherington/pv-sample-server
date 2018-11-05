@@ -1,31 +1,8 @@
 import Server from './server';
-import { queryGroups, groups } from './data';
-import { asyncIterator } from 'lazy-iters';
-
-function notFoundResponse(path) {
-  return {
-    description: `The resource '${path}' could not be found.`
-  };
-}
-
-const routingInfo = {
-  '/all': server => async (req, res) => {
-    const data = asyncIterator(queryGroups(groups));
-    const received = await data.collect();
-
-    res.json(received);
-  },
-  '/sample': server => async (req, res) => {
-    const sample = server.dailySample;
-    res.json(sample);
-  },
-  '/*': server => async (req, res) => {
-    res.json(notFoundResponse(req.path));
-  }
-};
+import routes from './config/routes';
 
 function main() {
-  const server = new Server(routingInfo);
+  const server = new Server(routes);
   server.start();
 }
 

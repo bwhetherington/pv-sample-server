@@ -3,6 +3,7 @@ import cors from 'cors';
 import { queryGroups, groups } from './data';
 import { asyncIterator } from 'lazy-iters';
 import scheduler from 'node-schedule';
+import logger from './config/logger';
 
 const PORT = process.env.PORT | 8888;
 
@@ -28,7 +29,7 @@ export default class Server {
       app.get(key, cors(), this.router[key]);
     }
     app.listen(this.port, () => {
-      console.log(`Server listening on port ${this.port}`);
+      logger.info(`server listening on port: ${this.port}`);
     });
   }
 
@@ -36,7 +37,7 @@ export default class Server {
     const rule = new scheduler.RecurrenceRule();
     rule.minute = new scheduler.Range(0, 59, 1);
     scheduler.scheduleJob(rule, () => {
-      console.log('updating sample');
+      logger.info('updating sample');
       this.updateSample();
     });
   }

@@ -34,8 +34,8 @@ export async function* queryGroup(group) {
  * Produces an async generator of
  * @param {array} groups
  */
-export async function* queryGroups(groups) {
-  for (const group of groups) {
+export async function* queryGroups(query = groups) {
+  for (const group of query) {
     yield* queryGroup(group);
   }
 }
