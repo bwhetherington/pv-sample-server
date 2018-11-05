@@ -37,7 +37,7 @@ export default class Server {
     const rule = new scheduler.RecurrenceRule();
     rule.minute = new scheduler.Range(0, 59, 1);
     scheduler.scheduleJob(rule, () => {
-      logger.info('updating sample');
+      logger.debug('updating sample');
       this.updateSample();
     });
   }
