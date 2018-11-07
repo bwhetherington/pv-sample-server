@@ -1,28 +1,84 @@
-import { asyncIterator } from 'lazy-iters';
-import { groups, queryGroups } from '../data';
+import { iterator } from 'lazy-iters';
 import logger from './logger';
 
 function notFoundResponse(path) {
   return {
-    description: `unknown resource '${path}'`
+    error: `unknown resource: '${path}'`
+  };
+}
+
+function groupNotFound(group) {
+  return {
+    error: `unknown group: '${group}'`
+  };
+}
+
+const noGroupSpecified = {
+  error: 'no group specified'
+};
+
+const noItemSpecified = {
+  error: 'no item specified'
+};
+
+function itemNotFound(item) {
+  return {
+    error: `unknown item: ${item}`
   };
 }
 
 const routes = {
-  '/all': _ => async (req, res) => {
+  '/all': server => async (req, res) => {
     logger.info(`all artifacts requested by ip: ${req.ip}`);
-    const data = asyncIterator(queryGroups(groups));
-    const received = await data.collect();
+    const data = iterator(Object.values(server.data))
+      .flatten()
+      .collect();
 
-    res.json(received);
+    res.json(data);
   },
-  '/sample': server => (req, res) => {
+  '/sample': server => async (req, res) => {
     logger.info(`daily sample requested by ip: ${req.ip}`);
     const sample = server.dailySample;
     res.json(sample);
   },
-  '*': _ => (req, res) => {
-    logger.error(`unknown resource '${req.path}' requested by ip: ${req.ip}`);
+  '/groups/:group': server => async (req, res) => {
+    const { group } = req.params;
+    const groupName = group.replace(/%20/g, ' ');
+    const data = server.data[groupName];
+    if (data !== null && data !== undefined) {
+      if (data.length == 0) {
+        logger.warn(`group '${groupName}' is empty`);
+      }
+      logger.info(`group '${groupName}' requested by ip: ${req.ip}`);
+      res.json(data);
+    } else {
+      logger.warn(`unknown group '${groupName}' requested by ip: ${req.ip}`);
+      res.json(groupNotFound(groupName));
+    }
+  },
+  '/groups': _ => async (_, res) => res.json(noGroupSpecified),
+  '/items/:item': server => async (req, res) => {
+    const { item } = req.params;
+    if (item !== null && item !== undefined) {
+      const member = iterator(Object.values(server.data))
+        .flatten()
+        .filter(
+          artifact =>
+            artifact !== null && artifact !== undefined && item.localeCompare(artifact.ck_id) === 0
+        )
+        .first();
+      if (member !== undefined) {
+        res.json(member);
+      } else {
+        res.json(itemNotFound(item));
+      }
+    } else {
+      res.json(noItemSpecified);
+    }
+  },
+  '/items': _ => async (_, res) => res.json(noItemSpecified),
+  '*': _ => async (req, res) => {
+    logger.warn(`unknown resource '${req.path}' requested by ip: ${req.ip}`);
     res.status = 404;
     res.json(notFoundResponse(res.path));
   }

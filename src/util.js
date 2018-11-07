@@ -29,3 +29,7 @@ export async function* asyncSkip(iter, n) {
 export function randomInt(low, high) {
   return Math.floor(Math.random() * (high - low) + low);
 }
+
+export function createMap(keys, f) {
+  return Object.assign(...keys.map(key => ({ [key]: f(key) })));
+}

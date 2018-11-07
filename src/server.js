@@ -1,15 +1,19 @@
 import express from 'express';
 import cors from 'cors';
-import { queryGroups, groups, convertArtifact } from './data';
+import { queryGroup, groups, convertArtifact } from './data';
 import { iterator, asyncIterator } from 'lazy-iters';
 import scheduler from 'node-schedule';
 import logger from './config/logger';
+import { createMap } from './util';
 
 const PORT = process.env.PORT | 8888;
 
 export default class Server {
   constructor(router = {}, port = PORT) {
     this.port = port;
+
+    // All groups default to empty data
+    this.data = createMap(groups, _ => []);
 
     const routings = {};
     for (const key of Object.keys(router)) {
@@ -34,17 +38,23 @@ export default class Server {
   }
 
   scheduleUpdates() {
-    const rule = new scheduler.RecurrenceRule();
-    rule.minute = new scheduler.Range(0, 59, 1);
-    scheduler.scheduleJob(rule, () => {
+    // Schedule job to run every hour
+    scheduler.scheduleJob('* * 1 * *', () => {
       this.updateSample();
     });
   }
 
   async updateSample() {
-    const query = asyncIterator(queryGroups(groups));
+    // Update cached group data
+    for (const group of groups) {
+      const iter = asyncIterator(queryGroup(group));
+      const groupData = await iter.collect();
+      this.data[group] = groupData;
+      logger.debug(`group '${group}' updated`);
+    }
 
-    const sample = await query
+    const sample = iterator(Object.values(this.data))
+      .flatten()
       .loop()
       .filter(_ => Math.random() < 0.0001)
       .take(3)
