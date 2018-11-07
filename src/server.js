@@ -6,7 +6,11 @@ import scheduler from 'node-schedule';
 import logger from './config/logger';
 import { createMap } from './util';
 
-const PORT = process.env.PORT | 8888;
+function valueOrElse(value, other) {
+  return value === null || value === undefined ? other : value;
+}
+
+const PORT = valueOrElse(process.env.PORT, 8888);
 
 export default class Server {
   constructor(router = {}, port = PORT) {
