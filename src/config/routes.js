@@ -32,6 +32,7 @@ const routes = {
     logger.info(`all artifacts requested by ip: ${req.ip}`);
     await server.waitUntilLoaded();
     const data = iterator(Object.values(server.data))
+      .map(({ items }) => items)
       .flatten()
       .collect();
 
@@ -54,7 +55,7 @@ const routes = {
       logger.info(`group '${groupName}' requested by ip: ${req.ip}`);
       // Spin until group is loaded
       await server.waitUntilLoaded();
-      res.json(server.data[groupName]);
+      res.json(server.data[groupName].items);
     } else {
       logger.warn(`unknown group '${groupName}' requested by ip: ${req.ip}`);
       res.json(groupNotFound(groupName));
@@ -65,6 +66,7 @@ const routes = {
     const { item } = req.params;
     if (item !== null && item !== undefined) {
       const member = iterator(Object.values(server.data))
+        .map(({ items }) => items)
         .flatten()
         .filter(
           artifact =>
