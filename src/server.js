@@ -63,11 +63,18 @@ export default class Server {
     return this.data[group].loaded;
   }
 
-  async waitUntilLoaded() {
+  async waitUntilLoaded(group = null) {
     // Spin until it's loaded
-    while (!this.isLoaded()) {
-      logger.warn('spinning until groups have been loaded');
-      await sleep(1000);
+    if (group === null) {
+      while (!this.isLoaded()) {
+        logger.warn('spinning until groups have been loaded');
+        await sleep(1000);
+      }
+    } else if (this.data[group] !== undefined) {
+      while (!this.isGroupLoaded(group)) {
+        logger.warn('spinning until group has been loaded');
+        await sleep(1000);
+      }
     }
   }
 
