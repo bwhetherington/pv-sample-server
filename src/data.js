@@ -45,6 +45,17 @@ export async function* queryGroups(query = groups) {
   }
 }
 
+export function fixArtifact(artifact) {
+  let { content } = artifact;
+  if (typeof content === 'string') {
+    content = JSON.parse(content);
+  }
+  return {
+    ...artifact,
+    content
+  };
+}
+
 export function convertArtifact(artifact) {
   const name = artifact.ck_id;
   const type = artifact.content.type;

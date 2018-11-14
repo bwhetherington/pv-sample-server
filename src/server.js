@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { queryGroup, groups, convertArtifact } from './data';
+import { queryGroup, groups, fixArtifact } from './data';
 import { iterator, asyncIterator } from 'lazy-iters';
 import scheduler from 'node-schedule';
 import logger from './config/logger';
@@ -59,6 +59,10 @@ export default class Server {
     return iterator(Object.values(this.data)).all(({ loaded }) => loaded);
   }
 
+  isGroupLoaded(group) {
+    return this.data[group].loaded;
+  }
+
   async waitUntilLoaded() {
     // Spin until it's loaded
     while (!this.isLoaded()) {
@@ -71,7 +75,7 @@ export default class Server {
     // Update cached group data
     for (const group of groups) {
       const iter = asyncIterator(queryGroup(group));
-      const items = await iter.collect();
+      const items = await iter.map(fixArtifact).collect();
       this.data[group] = {
         loaded: true,
         items
