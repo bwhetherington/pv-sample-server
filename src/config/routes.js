@@ -30,6 +30,7 @@ function itemNotFound(item) {
 const routes = {
   '/all': server => async (req, res) => {
     logger.info(`all artifacts requested by ip: ${req.ip}`);
+    await server.waitUntilLoaded();
     const data = iterator(Object.values(server.data))
       .flatten()
       .collect();
@@ -38,6 +39,7 @@ const routes = {
   },
   '/sample': server => async (req, res) => {
     logger.info(`daily sample requested by ip: ${req.ip}`);
+    await server.waitUntilLoaded();
     const sample = server.dailySample;
     res.json(sample);
   },
@@ -50,7 +52,9 @@ const routes = {
         logger.warn(`group '${groupName}' is empty`);
       }
       logger.info(`group '${groupName}' requested by ip: ${req.ip}`);
-      res.json(data);
+      // Spin until group is loaded
+      await server.waitUntilLoaded();
+      res.json(server.data[groupName]);
     } else {
       logger.warn(`unknown group '${groupName}' requested by ip: ${req.ip}`);
       res.json(groupNotFound(groupName));

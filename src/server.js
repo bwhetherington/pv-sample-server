@@ -6,6 +6,10 @@ import scheduler from 'node-schedule';
 import logger from './config/logger';
 import { createMap } from './util';
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function valueOrElse(value, other) {
   return value === null || value === undefined ? other : value;
 }
@@ -17,7 +21,10 @@ export default class Server {
     this.port = port;
 
     // All groups default to empty data
-    this.data = createMap(groups, _ => []);
+    this.data = createMap(groups, _ => ({
+      items: [],
+      loaded: false
+    }));
 
     const routings = {};
     for (const key of Object.keys(router)) {
@@ -48,16 +55,32 @@ export default class Server {
     });
   }
 
+  isLoaded() {
+    return iterator(Object.values(this.data)).all(({ loaded }) => loaded);
+  }
+
+  async waitUntilLoaded() {
+    // Spin until it's loaded
+    while (!this.isLoaded()) {
+      logger.warn('spinning until groups have been loaded');
+      await sleep(1000);
+    }
+  }
+
   async updateSample() {
     // Update cached group data
     for (const group of groups) {
       const iter = asyncIterator(queryGroup(group));
-      const groupData = await iter.collect();
-      this.data[group] = groupData;
+      const items = await iter.collect();
+      this.data[group] = {
+        loaded: true,
+        items
+      };
       logger.debug(`group '${group}' updated`);
     }
 
     const sample = iterator(Object.values(this.data))
+      .map(({ items }) => items)
       .flatten()
       .loop()
       .filter(_ => Math.random() < 0.0001)
