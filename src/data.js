@@ -13,10 +13,27 @@ export const groups = [
   'PV DATA Feb 2013 KM Erratic Sculpture Sculptures',
   'PV DATA Feb 2013 KM Erratic Sculpture Street Altars',
   'PV DATA Feb 2013 KM Erratic Sculpture Symbols',
-  // 'PV DATA 2014 KM Newly Documented Fountains',
   'PV FINAL DATA 2014 KM Fountains',
   'PV DATA Apr 2013 KM Flagstaff Pedestals'
 ];
+
+const scaffoldingCost = 2180;
+
+const defaultEstimates = {
+  'PV DATA Feb 2013 KM Erratic Sculpture Coats of Arms': 3700,
+  'PV DATA Feb 2013 KM Erratic Sculpture Crosses': 3700,
+  'PV DATA Feb 2013 KM Erratic Sculpture Decorations': 3600,
+  'PV DATA Feb 2013 KM Erratic Sculpture Fragments': 3600,
+  'PV DATA Feb 2013 KM Erratic Sculpture Inscriptions': 3600,
+  'PV DATA Feb 2013 KM Erratic Sculpture Other': 3600,
+  'PV DATA Feb 2013 KM Erratic Sculpture Patere': 3700,
+  'PV DATA Feb 2013 KM Erratic Sculpture Reliefs': 4700,
+  'PV DATA Feb 2013 KM Erratic Sculpture Sculptures': 4700,
+  'PV DATA Feb 2013 KM Erratic Sculpture Street Altars': 4700,
+  'PV DATA Feb 2013 KM Erratic Sculpture Symbols': 3500,
+  'PV FINAL DATA 2014 KM Fountains': 4700,
+  'PV DATA Apr 2013 KM Flagstaff Pedestals': 4700
+};
 
 export function queryUrl(baseUrl) {
   return `http://ckdata2.herokuapp.com/api/v1/dataset.json?group_name=${baseUrl}`;
@@ -46,13 +63,29 @@ export async function* queryGroups(query = groups) {
 }
 
 export function fixArtifact(artifact) {
-  let { content } = artifact;
+  let { amount_donated, cost_estimate, content, item_type } = artifact;
   if (typeof content === 'string') {
     content = JSON.parse(content);
   }
+
+  if (cost_estimate === null || cost_estimate === undefined) {
+    cost_estimate = defaultEstimates[item_type];
+    if (cost_estimate === undefined) {
+      cost_estimate = 0;
+    }
+  }
+
+  if (amount_donated === null || amount_donated === undefined) {
+    amount_donated = Math.round(Math.random() * cost_estimate);
+  }
+
   return {
     ...artifact,
-    content
+    content: {
+      ...content,
+      amount_donated,
+      cost_estimate
+    }
   };
 }
 
