@@ -62,7 +62,7 @@ export async function* queryGroups(query = groups) {
   }
 }
 
-const googleDriveImageUrlRegex = /(https:\/\/drive\.google\.com\/)(.*)(\?id=1GYD6-2LkIfLctxkZNqrO9KtL4wB7FeDs)/;
+const googleDriveImageUrlRegex = /(https:\/\/drive\.google\.com\/)(.*)(\?.*)/;
 
 export function fixArtifact(artifact) {
   let { content, item_type } = artifact;
