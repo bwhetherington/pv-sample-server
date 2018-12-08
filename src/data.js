@@ -62,10 +62,18 @@ export async function* queryGroups(query = groups) {
   }
 }
 
+const googleDriveImageUrlRegex = /(https:\/\/drive\.google\.com\/)(.*)(\?id=1GYD6-2LkIfLctxkZNqrO9KtL4wB7FeDs)/;
+
 export function fixArtifact(artifact) {
-  let { amount_donated, cost_estimate, content, item_type } = artifact;
+  let { content, item_type } = artifact;
   if (typeof content === 'string') {
     content = JSON.parse(content);
+  }
+
+  let { cost_estimate, amount_donated, image_url } = content;
+
+  if (image_url.match(googleDriveImageUrlRegex)) {
+    image_url = image_url.replace(googleDriveImageUrlRegex, '$1uc$3');
   }
 
   if (cost_estimate === null || cost_estimate === undefined) {
@@ -84,7 +92,8 @@ export function fixArtifact(artifact) {
     content: {
       ...content,
       amount_donated,
-      cost_estimate
+      cost_estimate,
+      image_url
     }
   };
 }
