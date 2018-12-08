@@ -94,6 +94,7 @@ export default class Server {
       .map(({ items }) => items)
       .flatten()
       .loop()
+      .filter(artifact => artifact.content.image_url.startsWith('https://drive.google.com'))
       .filter(_ => Math.random() < 0.0001)
       .take(3)
       .collect();
