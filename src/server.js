@@ -94,7 +94,11 @@ export default class Server {
       .map(({ items }) => items)
       .flatten()
       .loop()
-      .filter(artifact => artifact.content.image_url.startsWith('https://drive.google.com'))
+      .filter(
+        artifact =>
+          artifact.content.image_url.startsWith('https://drive.google.com') ||
+          artifact.content['PV IMAGES Mar 2013 KM Erratic Sculpture (all sestieri)']
+      )
       .filter(_ => Math.random() < 0.0001)
       .take(3)
       .collect();

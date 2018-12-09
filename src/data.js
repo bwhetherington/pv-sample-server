@@ -2,17 +2,17 @@ import fetch from 'node-fetch';
 import { randomInt, readFileAsync } from './util';
 
 export const groups = [
-  'PV DATA Feb 2013 KM Erratic Sculpture Coats of Arms',
-  'PV DATA Feb 2013 KM Erratic Sculpture Crosses',
-  'PV DATA Feb 2013 KM Erratic Sculpture Decorations',
-  'PV DATA Feb 2013 KM Erratic Sculpture Fragments',
-  'PV DATA Feb 2013 KM Erratic Sculpture Inscriptions',
-  'PV DATA Feb 2013 KM Erratic Sculpture Other',
-  'PV DATA Feb 2013 KM Erratic Sculpture Patere',
-  'PV DATA Feb 2013 KM Erratic Sculpture Reliefs',
-  'PV DATA Feb 2013 KM Erratic Sculpture Sculptures',
-  'PV DATA Feb 2013 KM Erratic Sculpture Street Altars',
-  'PV DATA Feb 2013 KM Erratic Sculpture Symbols',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Coats of Arms',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Crosses',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Decorations',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Fragments',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Inscriptions',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Other',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Patere',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Reliefs',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Sculptures',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Street Altars',
+  'PV MERGE Mar 2013 KM Erratic Sculpture Symbols',
   'PV FINAL DATA 2014 KM Fountains',
   'PV DATA Apr 2013 KM Flagstaff Pedestals'
 ];
@@ -20,17 +20,17 @@ export const groups = [
 const scaffoldingCost = 2180;
 
 const defaultEstimates = {
-  'PV MERGE Feb 2013 KM Erratic Sculpture Coats of Arms': 3700,
-  'PV DATA Feb 2013 KM Erratic Sculpture Crosses': 3700,
-  'PV DATA Feb 2013 KM Erratic Sculpture Decorations': 3600,
-  'PV DATA Feb 2013 KM Erratic Sculpture Fragments': 3600,
-  'PV DATA Feb 2013 KM Erratic Sculpture Inscriptions': 3600,
-  'PV DATA Feb 2013 KM Erratic Sculpture Other': 3600,
-  'PV DATA Feb 2013 KM Erratic Sculpture Patere': 3700,
-  'PV DATA Feb 2013 KM Erratic Sculpture Reliefs': 4700,
-  'PV DATA Feb 2013 KM Erratic Sculpture Sculptures': 4700,
-  'PV DATA Feb 2013 KM Erratic Sculpture Street Altars': 4700,
-  'PV DATA Feb 2013 KM Erratic Sculpture Symbols': 3500,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Coats of Arms': 3700,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Crosses': 3700,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Decorations': 3600,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Fragments': 3600,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Inscriptions': 3600,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Other': 3600,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Patere': 3700,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Reliefs': 4700,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Sculptures': 4700,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Street Altars': 4700,
+  'PV MERGE Mar 2013 KM Erratic Sculpture Symbols': 3500,
   'PV FINAL DATA 2014 KM Fountains': 4700,
   'PV DATA Apr 2013 KM Flagstaff Pedestals': 4700
 };
