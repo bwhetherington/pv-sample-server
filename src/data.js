@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { randomInt } from './util';
+import { randomInt, readFileAsync } from './util';
 
 export const groups = [
   'PV DATA Feb 2013 KM Erratic Sculpture Coats of Arms',
@@ -20,7 +20,7 @@ export const groups = [
 const scaffoldingCost = 2180;
 
 const defaultEstimates = {
-  'PV DATA Feb 2013 KM Erratic Sculpture Coats of Arms': 3700,
+  'PV MERGE Feb 2013 KM Erratic Sculpture Coats of Arms': 3700,
   'PV DATA Feb 2013 KM Erratic Sculpture Crosses': 3700,
   'PV DATA Feb 2013 KM Erratic Sculpture Decorations': 3600,
   'PV DATA Feb 2013 KM Erratic Sculpture Fragments': 3600,
@@ -46,6 +46,15 @@ export async function* queryGroup(group) {
     const result = await fetch(url);
     const data = await result.json();
     yield* data;
+
+    // Display our own data
+    // TODO Actually upload the data to CKData so this hacky solution is not
+    // needed
+    if (group === groups[4]) {
+      const file = await readFileAsync('new-inscriptions.json', 'utf8');
+      const data = JSON.parse(file);
+      yield* data;
+    }
   } catch (ex) {
     // Stop returning if we encounter an error
     return;
