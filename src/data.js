@@ -36,7 +36,8 @@ const defaultEstimates = {
 };
 
 export function queryUrl(baseUrl) {
-  return `http://ckdata2.herokuapp.com/api/v1/dataset.json?group_name=${baseUrl}`;
+  return `http://data.cityknowledge.net/api/v1/dataset.json?group_name=${baseUrl}`;
+  // return `http://ckdata2.herokuapp.com/api/v1/dataset.json?group_name=${baseUrl}`;
   // return `http://localhost:8080/static/json/${baseUrl}.json`;
 }
 
